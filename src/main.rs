@@ -1,5 +1,6 @@
 use std::fs;
 use std::io::{stdin/*, stdout, Write*/};
+use std::{thread, time};
 mod isa;
 mod parse;
 
@@ -37,4 +38,6 @@ fn main() {
         Ok(_) => println!("Succesfully written to {}", path_hex),
         Err(_) => println!("Failed to write to {}", path_hex),
     }
+
+    thread::sleep(time::Duration::from_millis(2000));
 }
