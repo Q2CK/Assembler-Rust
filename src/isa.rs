@@ -10,6 +10,7 @@ pub struct ISA {
 }
 
 impl ISA {
+    // TODO: ISA from file
     pub fn new(cpu_name: &'static str) -> ISA {
         ISA { 
             name: cpu_name,

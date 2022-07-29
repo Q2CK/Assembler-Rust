@@ -8,22 +8,9 @@ fn main() {
 
     let isa = isa::ISA::new(cpu_name);
 
-    /*let isa = ISA { 
-        name: cpu_name,
-        instr: vec![
-            InstrType {asm: "ADD", opcode: "0000", bit_lengths: vec![2, 3, 3, 3],},
-            InstrType {asm: "SUB", opcode: "0001", bit_lengths: vec![2, 3, 3, 3],},
-            InstrType {asm: "AND", opcode: "0010", bit_lengths: vec![2, 3, 3, 3],},
-            //i tak dalej
-        ],
-    };*/
-
-    println!("{} {}", isa.instr[2].asm, isa.instr[2].opcode);
-
-    /*let x = 100;
-    let padding: usize = 8;
-    let s = format!("{x:b}");
-    println!("{s:0>0$}", padding);*/
+    // Create output strings
+    let mut bin_output = String::new();
+    let mut hex_output = String::new();
 
     // Get assembly path
     println!("Assembly file name: ");
@@ -34,13 +21,20 @@ fn main() {
     // Create output path
     let path_bin = String::from("bin_") + &asm_file[..(&asm_file.len() - 2)];
     let path_hex = String::from("hex_") + &asm_file[..(&asm_file.len() - 2)];
-    fs::write(&path_bin, String::from("LINE|INSTRUCTIONS\n\n")).expect("Failed to write");
-    fs::write(&path_hex, String::from("LINE|INSTRUCTIONS\n\n")).expect("Failed to write");
+    bin_output += "LINE|INSTRUCTIONS\n\n";
+    hex_output += "LINE|INSTRUCTIONS\n\n";
 
     // Get assembly line
-    let bin_output = parse::Parse(&path_asm);
+    bin_output += &parse::Parse(&path_asm, &isa).0;
+    hex_output += &parse::Parse(&path_asm, &isa).1;
 
-    println!("{}", bin_output);
-    
-    fs::write(&path_bin, bin_output).expect("Failed to write");
+    // Write results
+    match fs::write(&path_bin, bin_output) {
+        Ok(_) => println!("Succesfully written to {}", path_bin),
+        Err(_) => println!("Failed to write to {}", path_bin),
+    }
+    match fs::write(&path_hex, hex_output) {
+        Ok(_) => println!("Succesfully written to {}", path_hex),
+        Err(_) => println!("Failed to write to {}", path_hex),
+    }
 }
