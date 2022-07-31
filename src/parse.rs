@@ -1,9 +1,12 @@
 use std::fs;
 use std::u32;
-use crate::isa::ISA;
+use crate::isa_AnPU::ISA;
 
 fn to_hex(val: &str, len: usize) -> String {
-    let n: u32 = u32::from_str_radix(val, 2).unwrap();
+    let n = match u32::from_str_radix(val, 2) {
+        Ok(x) => x,
+        Err(_) => 0,
+    };
     format!("{:01$x}", n, len)
 }
 
@@ -22,7 +25,7 @@ pub fn Parse(path_asm: &str, isa: &ISA) -> (String, String){
         let mut bin_line = String::new();
 
         for instr in &isa.instr {
-            if &tokens[0][..3] == instr.asm {
+            if &tokens[0][..isa.opcode_length] == instr.asm {
                 bin_line += instr.opcode;
                 let mut i_token = 0;
                 for arg_length in &instr.bit_lengths {
@@ -40,7 +43,7 @@ pub fn Parse(path_asm: &str, isa: &ISA) -> (String, String){
                 }
             }       
         }
-        hex_output += &(format!("{i:0>3}> ") + &to_hex(&bin_line, 3).to_uppercase() + "\n");
+        hex_output += &(format!("{i:0>3}> ") + &to_hex(&bin_line, isa.hex_len).to_uppercase() + "\n");
         bin_output += &(format!("{i:0>3}> ") + &bin_line + "\n");
     }
     (bin_output, hex_output)

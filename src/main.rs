@@ -1,13 +1,13 @@
 use std::fs;
 use std::io::{stdin/*, stdout, Write*/};
 use std::{thread, time};
-mod isa;
+mod isa_AnPU;
 mod parse;
 
 fn main() {
-    let cpu_name = "Maszyna W+";
+    let cpu_name = "AnPU";
 
-    let isa = isa::ISA::new(cpu_name);
+    let isa = isa_AnPU::ISA::new(cpu_name);
 
     // Create output strings
     let mut bin_output = String::new();
